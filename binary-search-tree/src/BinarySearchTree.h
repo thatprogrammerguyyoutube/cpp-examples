@@ -61,7 +61,9 @@ public:
 
     [[nodiscard]] auto copy_recursive() const -> BinarySearchTree {
         auto cpy = BinarySearchTree{};
-        cpy.root = root->copy();
+        if (root != nullptr) {
+            cpy.root = root->copy();
+        }
         cpy.count = count;
         return cpy;
     }
@@ -286,16 +288,15 @@ auto BinarySearchTree<Data, Comp>::remove_swap_with_successor(Node *node) {
 
     decltype(auto) old = prev->left;
 
-    if (cur->right) {
-        prev->left = cur->right;
-    }
-    else if (prev != node) {
-        prev->left = nullptr;
+    if (prev == node) {
+        old = prev->right;
+        prev->right = cur->right;
     }
     else {
-        old = node->right;
-        node->right = nullptr;
+        prev->left = cur->right;
     }
+
+    cur->right = nullptr;
 
     delete old;
 }
